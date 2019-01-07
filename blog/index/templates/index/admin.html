@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>博客管理员后台</title>
+{% load static %}
+<link href="{% static '/index/main.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <header>
+        <div class="backimg"><img src="{% static '/index/IMG_0293.JPG' %}"></div>
+    </header>
+
+    <nav>
+        <div class="menu">
+            <a href="#user" >用户管理</a>
+            <a href="#article" >文章管理</a>
+            <a href="#category" >标签管理</a>
+        </div>
+    </nav>
+    <main class="clear">
+        <div class="mainLeft">
+            <div class="listBox">
+                <a name='user'></a>
+                <table>
+                    <tr>
+                        <th>用户id</th>
+                        <th>用户昵称</th>
+                        <th>用户密码</th>
+                        <th>用户状态</th>
+                        <th>操作</th>
+                    </tr>
+                    {% for item in user %}
+                    <tr>
+                        <td>{{ item.userid }}</td>
+                        <td>{{ item.username }}</td>
+                        <td>{{ item.password }}</td>
+                        <td>
+                            <select family="user" attr="{{ item.userid }}">
+                                {% if item.role == 0 %}
+                                <option value ="0" selected = "selected">禁言</option>
+                                <option value ="1">正常</option>
+                                <option value ="2">管理员</option>
+                                {% elif item.role == 1 %}
+                                <option value ="0">禁言</option>
+                                <option value ="1" selected = "selected">正常</option>
+                                <option value ="2">管理员</option>
+                                {% elif item.role == 2 %}
+                                <option value ="0">禁言</option>
+                                <option value ="1">正常</option>
+                                <option value ="2" selected = "selected">管理员</option>
+                                {% endif %}
+                            </select>
+                        </td>
+                        <td><a href="">删除</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <div class="listBox">
+                <a name='article'></a>
+                <table>
+                    <tr>
+                        <th>文章id</th>
+                        <th>标题</th>
+                        <th>更新时间</th>
+                        <th>作者</th>
+                        <th>文章状态</th>
+                    </tr>
+                    {% for item in article %}
+                    <tr>
+                        <td>{{ item.articleid }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.date }}</td>
+                        <td>{{ item.username }}</td>
+                        <td>
+                            <select family="article" attr="{{ item.articleid }}">
+                                {% if item.a_state == 1 %}
+                                <option value ="1" selected = "selected">正常</option>
+                                <option value ="0">删除</option>
+                                {% else %}
+                                <option value ="1">正常</option>
+                                <option value ="0" selected = "selected">删除</option>
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+             <div class="listBox">
+                <a name='category'></a>
+                <table>
+                    <tr>
+                        <th>标签id</th>
+                        <th>标签</th>
+                        <th>标签状态</th>
+                    </tr>
+                    {% for item in category %}
+                    <tr>
+                        <td>{{ item.categoryid }}</td>
+                        <td>{{ item.categoryname }}</td>
+                        <td>
+                            <select family="cate" attr="{{ item.categoryid }}">
+                                {% if item.state == 1 %}
+                                <option value ="1" selected = "selected">正常</option>
+                                <option value ="0">删除</option>
+                                {% else %}
+                                <option value ="1">正常</option>
+                                <option value ="0" selected = "selected">删除</option>
+                                {% endif %}
+                            </select>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <form action="/adminsetting/" method="POST" style="text-align: left">
+                    {% csrf_token %}
+                    <input type="text" name="categoryname">
+                    <button>添加</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="mainRight">
+
+            <div class="rightBox">
+                <div class="title"><span>用户信息</span></div>
+                <p><span class="colDark">{{ username }}</span></p>
+
+                 <p>
+                     <span class="colDanger info">你好,管理员!</span>
+                     <a href="/">返回首页</a>
+                 </p>
+
+                <p><span class="colDark"><a href="/logout/" id="logoutBtn">退出</a></span></p>
+            </div>
+        </div>
+    </main>
+
+</body>
+<script >
+    let selects = document.querySelectorAll("select");
+    for(let i=0;i<selects.length;i++){
+        selects[i].onchange = function() {
+            var ajax=new XMLHttpRequest();
+            ajax.onload=function(ev){
+                if(ajax.response!='done'){
+                    alert('error')
+                }
+            };
+            ajax.open("get", "/adminsetting?family="+selects[i].getAttribute('family')+"&attr="+selects[i].getAttribute('attr')+"&value="+selects[i].value);
+	        ajax.send();
+        }
+    }
+</script>
+</html>

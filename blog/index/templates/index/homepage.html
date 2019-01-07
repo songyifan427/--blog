@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>个人博客</title>
+{% load static %}
+<link href="{% static '/index/main.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <header>
+        <div class="backimg"><img src="{% static '/index/IMG_0293.JPG' %}"></div>
+    </header>
+
+    <nav>
+        <div class="menu">
+            <a href="/{{ username }}" class="focus">我的文章</a>
+            <a href="/{{ username }}/addarticle">新的文章</a>
+        </div>
+    </nav>
+    <main class="clear">
+        <div class="mainLeft">
+            {% if article %}
+                {% for item in article %}
+                <div class="listBox">
+                    <h1>{{ item.title }}</h1>
+                    <p class="colDefault">
+                        时间：<span class="colInfo">{{ item.date }}</span> -
+                        阅读：<span class="colInfo">{{ item.readnum }}</span> -
+                        评论：<span class="colInfo">{{ item.commentnum }}</span>
+                    </p>
+                    <dfn><p>{{ item.abstract }}</p></dfn>
+                    <div class="function">
+                        <a href="/article/{{ item.articleid }}">阅读全文</a>
+                        <a href="/article/{{ item.articleid }}">修改内容</a>
+                        <a href="/article/{{ item.articleid }}">删除文章</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="listBox">
+                <h1>还没有发表过文章</h1>
+                {% if role != 0 %}
+                <div class="function">
+                    <a href="/{{ username }}/addarticle">添加文章</a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="mainRight">
+            <div class="rightBox">
+                <div class="title"><span>用户信息</span></div>
+                    <p><span class="colDark">{{ username }}</span></p>
+
+                     <p>
+                        <span class="colDanger info">你好,欢迎登录博客!</span>
+                        {% if role == 0 %}
+                        <span class="colDanger info">您的博客处于违规禁言状态!</span>
+                        {% endif %}
+                     </p>
+
+                    <p><span class="colDark"><a href="/logout/" id="logoutBtn">退出</a></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+</body>
+<script >
+
+</script>
+</html>

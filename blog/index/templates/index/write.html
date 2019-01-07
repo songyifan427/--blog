@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>个人博客</title>
+{% load static %}
+<link href="{% static '/index/main.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <header>
+        <div class="backimg"><img src="{% static '/index/IMG_0293.JPG' %}"></div>
+    </header>
+
+    <nav>
+        <div class="menu">
+            <a href="/{{ username }}">我的文章</a>
+            <a href="javascript:;"class="focus">新的文章</a>
+        </div>
+    </nav>
+    <main class="clear">
+        <div class="mainLeft">
+            <div class="listBox">
+                <form action="/{{ username }}/addarticle/" method="POST">
+                    {% csrf_token %}
+                    <dfn><p>标题</p></dfn>
+                    <h1><input type="text" name='title' style="width:300px;height: 30px"></h1>
+                    <dfn><p>简介</p></dfn>
+                    <textarea name="abstract" style="width: 680px;height:60px;resize:none"></textarea>
+                    <dfn><p>内容</p></dfn>
+                    <textarea name="a_content" style="width: 680px;height:120px;resize:none"></textarea>
+                    <dfn>
+                        <p>标签</p>
+                        <select name="categoryname">
+                            {% for item in category %}
+                            <option value ="{{ item.categoryname }}">{{ item.categoryname }}</option>
+                            {% endfor %}
+                        </select>
+                    </dfn>
+                    <div class="function" style="text-align: right"><button style="padding: 5px">submit</button></div>
+                </form>
+             </div>
+                
+        </div>
+
+        <div class="mainRight">
+            <div class="rightBox">
+                <div class="title"><span>用户信息</span></div>
+                    <p><span class="colDark">{{ username }}</span></p>
+
+                     <p>
+                        <span class="colDanger info">你好,欢迎登录博客!</span>
+                        {% if role == 0 %}
+                        <span class="colDanger info">您的博客处于违规禁言状态!</span>
+                        {% endif %}
+                     </p>
+
+                    <p><span class="colDark"><a href="/logout/" id="logoutBtn">退出</a></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+</body>
+<script >
+
+</script>
+</html>

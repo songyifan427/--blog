@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>博客</title>
+{% load static %}
+<link href="{% static '/index/main.css' %}" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <header>
+        <div class="backimg"><img src="{% static '/index/IMG_0293.JPG' %}"></div>
+    </header>
+
+    <nav>
+        <div class="menu">
+            <a href="/">推荐</a>
+            {% for item in cate %}
+            <a href="/list/{{ item.categoryname }}">{{ item.categoryname }}</a>
+            {% endfor %}
+        </div>
+    </nav>
+    <main class="clear">
+        <div class="mainLeft">
+            <div class="listBox">
+                <h1>{{ article.title }}</h1>
+                <p class="colDefault">
+                    作者：<span class="colInfo">{{ article.username }}</span> -
+                    时间：<span class="colInfo">{{ article.date }}</span> -
+                    阅读：<span class="colInfo">{{ article.readnum }}</span> -
+                    评论：<span class="colInfo">{{ article.commentnum }}</span>
+                </p>
+                <div class="contentBox">{{ article.a_content }}</div>
+            </div>
+        </div>
+
+        <div class="mainRight">
+
+            {% if userid %}
+            <div class="rightBox">
+                <div class="title"><span>用户信息</span></div>
+                <p><span class="colDark">{{ username }}</span></p>
+
+                 {% if role == 2 %}
+                 <p>
+                     <span class="colDanger info">你好,管理员!</span>
+                     <a href="/admin/">进入管理</a>
+                 </p>
+                 {% else %}
+                 <p><span class="colDanger info">你好,欢迎登录博客!</span></p>
+                 {% endif %}
+
+                <p><span class="colDark"><a href="/logout/" id="logoutBtn">退出</a></span></p>
+            </div>
+            {% else %}
+
+            <div class="rightBox" id="loginBox" style="display: block">
+
+                <form action="/login/" method="POST">
+                    {% csrf_token %}
+                    <div class="title"><span>登录</span></div>
+                    <div class="line"><span class="colDark">用户名：</span><input type="text" name = "username"><em></em></div>
+                    <div class="line"><span class="colDark">密码：</span><input type="password" name = "password"><em></em></div>
+                    <input type="text" name = "url"  id = 'thelogin' style="display: none">
+                    <script >document.querySelector('#thelogin').value=location.href</script>
+                    <div class="line"><span class="colDark"></span><button>登 录</button></div>
+                </form>
+                <p class="textRight">还没注册?<a href="javascript:login_register();" class="colMint">马上注册</a></p>
+                <p class="colWarning textCenter"></p>
+            </div>
+
+            <div class="rightBox" id="registerBox" style="display: none">
+                <form action="/register/" method="POST">
+                    {% csrf_token %}
+                    <div class="title"><span>注册</span></div>
+                    <div class="line"><span class="colDark">用户名：</span><input type="text" name = "username" ></div>
+                    <div class="line"><span class="colDark">密码：</span><input type="password" name = "password" ></div>
+                    <div class="line"><span class="colDark">确认：</span><input type="password" name = "repassword" ></div>
+                    <input type="text" name = "url"  id = 'theregister' style="display: none">
+                    <script >document.querySelector('#theregister').value=location.href</script>
+                    <div class="line"><span class="colDark"></span><button>注 册</button></div>
+                </form>
+                <p class="textRight">已有账号?<a href="javascript:register_login();" class="colMint">马上登录</a></p>
+                <p class="colWarning textCenter"></p>
+            </div>
+
+            {% endif %}
+        </div>
+    </main>
+
+    <main class="clear">
+        <div class="mainLeft">
+            <div class="listBox">
+                {% if comment %}
+                <h1 style="text-align: left">评论：</h1>
+
+                    {% for item in comment %}
+                    <div class="contentBox" style="text-align: left">{{ item.c_content }}</div>
+                    <p class="colDefault" style="text-align: right">
+                        [<span class="colInfo">{{ item.username }}</span>] -
+                        <span class="colInfo">{{ item.date }}</span>
+                    </p>
+                    {% endfor %}
+
+                    {% if userid %}
+                        {% if role != 0 %}
+                        <form action="/comment/{{ article.articleid }}/" method="POST">
+                            {% csrf_token %}
+                            <textarea name="c_content" style="width: 680px;height: 110px;resize:none" ></textarea>
+                            <input type="text" name = "url"  class='thecomment' style="display: none">
+                            <script >document.querySelector('.thecomment').value=location.href</script>
+                            <div class="function" style="text-align: right"><button style="padding: 5px">submit</button></div>
+                        </form>
+                        {% endif %}
+                    {% endif %}
+
+                {% else %}
+                    <h1>暂无评论</h1>
+                    {% if userid %}
+                        {% if role != 0 %}
+                        <form action="/comment/{{ article.articleid }}/" method="POST">
+                            {% csrf_token %}
+                            <textarea name="c_content" style="width: 680px;height: 110px;resize:none" ></textarea>
+                            <input type="text" name = "url"  class='thecomment' style="display: none">
+                            <script >document.querySelector('.thecomment').value=location.href</script>
+                            <div class="function" style="text-align: right"><button style="padding: 5px">submit</button></div>
+                        </form>
+                        {% endif %}
+                    {% endif %}
+
+                {% endif %}
+            </div>
+        </div>
+
+    </main>
+
+
+</body>
+<script >
+    function login_register() {
+      document.querySelector('#loginBox').style.display='none';document.querySelector('#registerBox').style.display='block';
+    }
+    function register_login() {
+      document.querySelector('#registerBox').style.display='none';document.querySelector('#loginBox').style.display='block';
+    }
+</script>
+</html>
