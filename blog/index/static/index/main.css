@@ -221,6 +221,9 @@ main .mainLeft .listBox .contentBox{
   width: 680px;
   margin: 16px auto;
 }
+main .mainLeft .listBox .contentBox p{
+  text-align: left;
+}
 main .mainLeft .textBox {
   width: 658px;
   height: 280px;

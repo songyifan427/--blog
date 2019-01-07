@@ -12,4 +12,6 @@ urlpatterns = [
     path('adminsetting/', views.adminsetting, name='adminsetting'),
     path('<userName>/', views.homepage, name='homepage'),
     path('<userName>/addarticle/', views.addarticle, name='addarticle'),
+    path('<userName>/updarticle/<articleid>/', views.updarticle, name='updarticle'),
+    path('<userName>/delarticle/<articleid>/', views.delarticle, name='delarticle'),
 ]

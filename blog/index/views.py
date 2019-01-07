@@ -63,12 +63,13 @@ def list(request,categoryname):
     userid = request.session.get('userid', '')
     username = request.session.get('username', '')
     role = request.session.get('role', '')
-    return render(request, 'index/list.html',{'cate': cate, 'article': article, 'userid': userid, 'username': username, 'role': role,'categoryname':categoryname})
+    return render(request, 'index/list.html',{'cate': cate, 'article': article, 'userid': userid, 'username': username,
+                                              'role': role,'categoryname':categoryname})
 
 def article(request,articleid):
     cate = Category.objects.all()
-    article = Article.objects.get(articleid=articleid)
-    if article.a_state==0:
+    article = Article.objects.filter(articleid=articleid).first()
+    if not article or article.a_state==0:
         return redirect('/')
     article.readnum+=1
     article.save()
@@ -78,7 +79,8 @@ def article(request,articleid):
     userid = request.session.get('userid', '')
     username = request.session.get('username', '')
     role = request.session.get('role', '')
-    return render(request, 'index/article.html',{'cate': cate, 'article': article, 'userid': userid,'comment': comment , 'username': username, 'role': role})
+    return render(request, 'index/article.html',{'cate': cate, 'article': article, 'userid': userid,'comment': comment ,
+                                                 'username': username, 'role': role})
 
 def comment(request,articleid):
     if request.POST:
@@ -98,7 +100,8 @@ def admin(request):
         for i in range(len(article)):
             article[i].username = User.objects.get(userid=article[i].userid).username
         category = Category.objects.all()
-        return render(request,'index/admin.html',{'userid':userid,'username':username,'role':role,'user':user,'article':article,'category':category})
+        return render(request,'index/admin.html',{'userid':userid,'username':username,'role':role,'user':user,
+                                                  'article':article,'category':category})
     return redirect('/')
 
 def adminsetting(request):
@@ -149,11 +152,59 @@ def addarticle(request,userName):
             abstract = request.POST['abstract']
             a_content = request.POST['a_content']
             categoryname = request.POST['categoryname']
-            if
-            # Article(title=title,userid=userid,abstract=abstract,categoryname=categoryname,a_content=a_content).save()
-            print(title,userid,abstract,categoryname,a_content)
+            if title == '' or a_content == '':
+                category = Category.objects.filter(state=1)
+                return render(request, 'index/write.html',{'userid': userid, 'username': username, 'role': role,
+                                                           'category': category,'categoryname':categoryname,'title':title,
+                                                           'abstract':abstract,'a_content':a_content,'isDone':'no'})
+            Article(title=title,userid=userid,abstract=abstract,categoryname=categoryname,a_content=a_content).save()
             return redirect('/' + username)
         else:
             category = Category.objects.filter(state=1)
             return render(request, 'index/write.html',{'userid':userid,'username':username,'role':role,'category':category})
+    return redirect('/')
+
+def updarticle(request,userName,articleid):
+    username = request.session.get('username', '')
+    if username and username == userName:
+        role = request.session.get('role', '')
+        if role == 0:
+            return redirect('/' + username)
+        userid = request.session.get('userid', '')
+        if request.POST:
+            title = request.POST['title']
+            abstract = request.POST['abstract']
+            a_content = request.POST['a_content']
+            categoryname = request.POST['categoryname']
+            if title == '' or a_content == '':
+                category = Category.objects.filter(state=1)
+                return render(request, 'index/write.html',
+                              {'userid': userid, 'username': username, 'role': role, 'category': category,
+                               'categoryname': categoryname, 'title': title, 'abstract': abstract,
+                               'a_content': a_content, 'isDone': 'no'})
+            obj = Article.objects.get(articleid=articleid)
+            obj.title = title
+            obj.abstract = abstract
+            obj.categoryname = categoryname
+            obj.a_content = a_content
+            obj.save()
+            return redirect('/' + username)
+        else:
+            article = Article.objects.filter(articleid=articleid).first()
+            if not article or article.a_state == 0:
+                return redirect('/' + username)
+            category = Category.objects.filter(state=1)
+            return render(request, 'index/write.html',
+                          {'userid': userid, 'username': username, 'role': role, 'category': category,'article':article})
+    return redirect('/')
+
+def delarticle(request,userName,articleid):
+    username = request.session.get('username', '')
+    if username and username == userName:
+        article = Article.objects.filter(articleid=articleid).first()
+        if not article:
+            return redirect('/' + username)
+        article.a_state = 0
+        article.save()
+        return redirect('/' + username)
     return redirect('/')

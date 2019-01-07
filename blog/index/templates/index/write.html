@@ -19,27 +19,60 @@
     </nav>
     <main class="clear">
         <div class="mainLeft">
+            {% if article %}
             <div class="listBox">
-                <form action="/{{ username }}/addarticle/" method="POST">
+                <form action="/{{ username }}/updarticle/{{ article.articleid }}/" method="POST">
                     {% csrf_token %}
                     <dfn><p>标题</p></dfn>
-                    <h1><input type="text" name='title' style="width:300px;height: 30px"></h1>
+                    <h1><input type="text" name='title'  value ="{{ article.title }}" style="width:300px;height: 30px"></h1>
                     <dfn><p>简介</p></dfn>
-                    <textarea name="abstract" style="width: 680px;height:60px;resize:none"></textarea>
+                    <textarea name="abstract" style="width: 680px;height:60px;resize:none">{{ article.abstract }}</textarea>
                     <dfn><p>内容</p></dfn>
-                    <textarea name="a_content" style="width: 680px;height:120px;resize:none"></textarea>
+                    <textarea name="a_content" style="width: 680px;height:120px;resize:none">{{ article.a_content }}</textarea>
                     <dfn>
                         <p>标签</p>
                         <select name="categoryname">
                             {% for item in category %}
-                            <option value ="{{ item.categoryname }}">{{ item.categoryname }}</option>
+                                {% if item.categoryname == article.categoryname %}
+                                <option value ="{{ item.categoryname }}" selected = "selected">{{ item.categoryname }}</option>
+                                {% else %}
+                                <option value ="{{ item.categoryname }}">{{ item.categoryname }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </dfn>
                     <div class="function" style="text-align: right"><button style="padding: 5px">submit</button></div>
                 </form>
-             </div>
-                
+            </div>
+            {% else %}
+            <div class="listBox">
+                <form action="/{{ username }}/addarticle/" method="POST">
+                    {% csrf_token %}
+                    <dfn><p>标题</p></dfn>
+                    <h1><input type="text" name='title'  value ="{{ title }}" style="width:300px;height: 30px"></h1>
+                    <dfn><p>简介</p></dfn>
+                    <textarea name="abstract" style="width: 680px;height:60px;resize:none">{{ abstract }}</textarea>
+                    <dfn><p>内容</p></dfn>
+                    <textarea name="a_content" style="width: 680px;height:120px;resize:none">{{ a_content }}</textarea>
+                    <dfn>
+                        <p>标签</p>
+                        <select name="categoryname">
+                            {% for item in category %}
+                                {% if item.categoryname == categoryname %}
+                                <option value ="{{ item.categoryname }}" selected = "selected">{{ item.categoryname }}</option>
+                                {% else %}
+                                <option value ="{{ item.categoryname }}">{{ item.categoryname }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </dfn>
+                    {% if isDone %}
+                    <p style="color: red">标题与内容不能为空</p>
+                    {% endif %}
+                    <div class="function" style="text-align: right"><button style="padding: 5px">submit</button></div>
+                </form>
+            </div>
+            {% endif %}
         </div>
 
         <div class="mainRight">
@@ -48,7 +81,7 @@
                     <p><span class="colDark">{{ username }}</span></p>
 
                      <p>
-                        <span class="colDanger info">你好,欢迎登录博客!</span>
+                        <span class="colDanger info">你好,欢迎登录博客!<a href="/" id="logoutBtn">回到首页</a></span>
                         {% if role == 0 %}
                         <span class="colDanger info">您的博客处于违规禁言状态!</span>
                         {% endif %}
