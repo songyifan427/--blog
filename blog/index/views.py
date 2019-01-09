@@ -19,8 +19,10 @@ def login(request):
     if request.POST:
         username = request.POST['username']
         password = request.POST['password']
-        isLogin = User.objects.get(username=username,password=password)
         url = request.POST['url']
+        if not username or not password:
+            return redirect(url)
+        isLogin = User.objects.filter(username=username,password=password).first()
         if isLogin:
             request.session['userid'] = isLogin.userid
             request.session['username'] = isLogin.username
@@ -45,7 +47,7 @@ def register(request):
         password = request.POST['password']
         repassword = request.POST['repassword']
         url = request.POST['url']
-        if password != repassword:
+        if password != repassword or not username or not password:
             return redirect(url)
         if User.objects.filter(username=username):
             return redirect(url)
@@ -208,3 +210,4 @@ def delarticle(request,userName,articleid):
         article.save()
         return redirect('/' + username)
     return redirect('/')
+

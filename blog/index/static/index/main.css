@@ -313,8 +313,6 @@ main .mainRight .rightBox .line.error em {
   top: 8px;
   right: 25px;
   cursor: pointer;
-  background: url(../images/close.png) no-repeat center center;
-  background-size: 80% 80%;
 }
 main .mainRight .rightBox .line span {
   width: 60px;
