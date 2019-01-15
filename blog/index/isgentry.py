@@ -81,11 +81,8 @@ class isgentry():
             
 
 # testWords='你真丑，我讨厌你'
-# re=isgentry(testWords).runTest()
-# if re:
-#     print('cu')
-# else:
-#     print('wen')                 
+# result=isgentry(testWords).runTest()
+# 返回布尔值，真为粗鲁语言             
  
 
 

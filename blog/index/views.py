@@ -70,7 +70,7 @@ def list(request,categoryname):
                                               'role': role,'categoryname':categoryname})
 
 def article(request,articleid):
-    cate = Category.objects.all()
+    cate = Category.objects.filter(state=1)
     article = Article.objects.filter(articleid=articleid).first()
     if not article or article.a_state==0:
         return redirect('/')
