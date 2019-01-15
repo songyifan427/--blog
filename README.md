@@ -1,4 +1,4 @@
-1. 运行Django环境，执行数据库迁移
+1. 运行Django环境，执行数据库迁移，注意在setting中配置数据库
 
    ```
    $ python manage.py makemigrations blog
