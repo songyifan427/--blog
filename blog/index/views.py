@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import User,Article,Comment,Category
+from .isgentry import isgentry
 
 def index(request):
     cate = Category.objects.filter(state=1)
@@ -87,8 +88,10 @@ def article(request,articleid):
 def comment(request,articleid):
     if request.POST:
         c_content = request.POST['c_content']
-        userid = request.session.get('userid', '')
-        Comment(userid=userid,articleid=articleid, c_content=c_content).save()
+        result=isgentry(c_content).runTest()
+        if not result:
+            userid = request.session.get('userid', '')
+            Comment(userid=userid,articleid=articleid, c_content=c_content).save()
         url = request.POST['url']
         return redirect(url)
 
