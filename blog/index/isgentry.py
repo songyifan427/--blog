@@ -62,9 +62,7 @@ class isgentry():
     def classifyNB(self,vocabList,trainMat,newWordVec,classList):
         p1Vec,p0Vec,pSpam=self.trainNB(vocabList,trainMat,classList)
         p1=sum(newWordVec*p1Vec)+np.log(pSpam)
-        print(p1)
         p0=sum(newWordVec*p0Vec)+np.log(1-pSpam)
-        print(p0)
         return True if p1>p0 else False
 
     def runTest(self):
